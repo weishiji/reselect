@@ -3,13 +3,14 @@
 [![npm package][npm-badge]][npm]
 [![Coveralls][coveralls-badge]][coveralls]
 
-Simple “selector” library for Redux (and others) inspired by getters in [NuclearJS](https://github.com/optimizely/nuclear-js.git), [subscriptions](https://github.com/Day8/re-frame#just-a-read-only-cursor) in [re-frame](https://github.com/Day8/re-frame) and this [proposal](https://github.com/reduxjs/redux/pull/169) from [speedskater](https://github.com/speedskater).
+他是一个为Redux(或者其他)而生的“数据选择器”的库，其灵感来自于[NuclearJS](https://github.com/optimizely/nuclear-js.git), [subscriptions](https://github.com/Day8/re-frame#just-a-read-only-cursor) in [re-frame](https://github.com/Day8/re-frame) and this [proposal](https://github.com/reduxjs/redux/pull/169) from [speedskater](https://github.com/speedskater)
 
-* Selectors can compute derived data, allowing Redux to store the minimal possible state.
-* Selectors are efficient. A selector is not recomputed unless one of its arguments changes.
-* Selectors are composable. They can be used as input to other selectors.
 
-You can play around with the following **example** in [this codepen](https://codepen.io/Domiii/pen/LzGNWj?editors=0010):
+* Selectors可以计算派生数据，可以让redux存储最小可执行状态树
+* Selectors是高效的，只有当一个选择器的参数发生变化的说话，他才会重新计算
+* Selectors是可组合的，任何一个单独的选择器都可以作为其他选择器的输入源
+  
+您可以在这里去做尝试与使用 [传送门](https://codepen.io/Domiii/pen/LzGNWj?editors=0010):
 
 ```js
 import { createSelector } from 'reselect'
@@ -49,32 +50,49 @@ console.log(taxSelector(exampleState))      // 0.172
 console.log(totalSelector(exampleState))    // { total: 2.322 }
 ```
 
-## Table of Contents
+## 内容列表
 
-- [Installation](#installation)
-- [Example](#example)
-  - [Motivation for Memoized Selectors](#motivation-for-memoized-selectors)
-  - [Creating a Memoized Selector](#creating-a-memoized-selector)
-  - [Composing Selectors](#composing-selectors)
-  - [Connecting a Selector to the Redux Store](#connecting-a-selector-to-the-redux-store)
-  - [Accessing React Props in Selectors](#accessing-react-props-in-selectors)
-  - [Sharing Selectors with Props Across Multiple Component Instances](#sharing-selectors-with-props-across-multiple-component-instances)
-- [API](#api)
-  - [`createSelector`](#createselectorinputselectors--inputselectors-resultfunc)
-  - [`defaultMemoize`](#defaultmemoizefunc-equalitycheck--defaultequalitycheck)
-  - [`createSelectorCreator`](#createselectorcreatormemoize-memoizeoptions)
-  - [`createStructuredSelector`](#createstructuredselectorinputselectors-selectorcreator--createselector)
-- [FAQ](#faq)
-  - [Why isn't my selector recomputing when the input state changes?](#q-why-isnt-my-selector-recomputing-when-the-input-state-changes)
-  - [Why is my selector recomputing when the input state stays the same?](#q-why-is-my-selector-recomputing-when-the-input-state-stays-the-same)
-  - [Can I use Reselect without Redux?](#q-can-i-use-reselect-without-redux)
-  - [The default memoization function is no good, can I use a different one?](#q-the-default-memoization-function-is-no-good-can-i-use-a-different-one)
-  - [How do I test a selector?](#q-how-do-i-test-a-selector)
-  - [How do I create a selector that takes an argument? ](#q-how-do-i-create-a-selector-that-takes-an-argument)
-  - [How do I use Reselect with Immutable.js?](#q-how-do-i-use-reselect-with-immutablejs)
-  - [Can I share a selector across multiple component instances?](#q-can-i-share-a-selector-across-multiple-component-instances)
-  - [Are there TypeScript typings?](#q-are-there-typescript-typings)
-  - [How can I make a curried selector?](#q-how-can-i-make-a-curried-selector)
+- [Reselect](#reselect)
+  - [内容列表](#%e5%86%85%e5%ae%b9%e5%88%97%e8%a1%a8)
+  - [Installation](#installation)
+  - [Example](#example)
+    - [Motivation for Memoized Selectors](#motivation-for-memoized-selectors)
+      - [`containers/VisibleTodoList.js`](#containersvisibletodolistjs)
+    - [Creating a Memoized Selector](#creating-a-memoized-selector)
+      - [`selectors/index.js`](#selectorsindexjs)
+    - [Composing Selectors](#composing-selectors)
+    - [Connecting a Selector to the Redux Store](#connecting-a-selector-to-the-redux-store)
+      - [`containers/VisibleTodoList.js`](#containersvisibletodolistjs-1)
+    - [Accessing React Props in Selectors](#accessing-react-props-in-selectors)
+      - [`components/App.js`](#componentsappjs)
+      - [`selectors/todoSelectors.js`](#selectorstodoselectorsjs)
+      - [`containers/VisibleTodoList.js`](#containersvisibletodolistjs-2)
+    - [Sharing Selectors with Props Across Multiple Component Instances](#sharing-selectors-with-props-across-multiple-component-instances)
+      - [`selectors/todoSelectors.js`](#selectorstodoselectorsjs-1)
+      - [`containers/VisibleTodoList.js`](#containersvisibletodolistjs-3)
+  - [API](#api)
+    - [createSelector(...inputSelectors | [inputSelectors], resultFunc)](#createselectorinputselectors--inputselectors-resultfunc)
+    - [defaultMemoize(func, equalityCheck = defaultEqualityCheck)](#defaultmemoizefunc-equalitycheck--defaultequalitycheck)
+    - [createSelectorCreator(memoize, ...memoizeOptions)](#createselectorcreatormemoize-memoizeoptions)
+      - [Customize `equalityCheck` for `defaultMemoize`](#customize-equalitycheck-for-defaultmemoize)
+      - [Use memoize function from lodash for an unbounded cache](#use-memoize-function-from-lodash-for-an-unbounded-cache)
+    - [createStructuredSelector({inputSelectors}, selectorCreator = createSelector)](#createstructuredselectorinputselectors-selectorcreator--createselector)
+  - [FAQ](#faq)
+    - [Q: Why isn’t my selector recomputing when the input state changes?](#q-why-isnt-my-selector-recomputing-when-the-input-state-changes)
+    - [Q: Why is my selector recomputing when the input state stays the same?](#q-why-is-my-selector-recomputing-when-the-input-state-stays-the-same)
+    - [Q: Can I use Reselect without Redux?](#q-can-i-use-reselect-without-redux)
+    - [Q: How do I create a selector that takes an argument?](#q-how-do-i-create-a-selector-that-takes-an-argument)
+    - [Q: The default memoization function is no good, can I use a different one?](#q-the-default-memoization-function-is-no-good-can-i-use-a-different-one)
+    - [Q: How do I test a selector?](#q-how-do-i-test-a-selector)
+    - [Q: How do I use Reselect with Immutable.js?](#q-how-do-i-use-reselect-with-immutablejs)
+    - [Q: Can I share a selector across multiple component instances?](#q-can-i-share-a-selector-across-multiple-component-instances)
+    - [Q: Are there TypeScript Typings?](#q-are-there-typescript-typings)
+    - [Q: How can I make a curried selector?](#q-how-can-i-make-a-curried-selector)
+  - [Related Projects](#related-projects)
+    - [re-reselect](#re-reselect)
+    - [reselect-tools](#reselect-tools)
+    - [reselect-map](#reselect-map)
+  - [License](#license)
 
 - [Related Projects](#related-projects)
 - [License](#license)
