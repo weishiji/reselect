@@ -7,7 +7,7 @@
 
 
 * Selectors可以计算派生数据，可以让redux存储最小可执行状态树
-* Selectors是高效的，只有当一个选择器的参数发生变化的说话，他才会重新计算
+* Selectors是高效的，只有当一个选择器的参数发生变化的时候，它才会重新计算
 * Selectors是可组合的，任何一个单独的选择器都可以作为其他选择器的输入源
   
 您可以在这里去做尝试与使用 [传送门](https://codepen.io/Domiii/pen/LzGNWj?editors=0010):
@@ -54,11 +54,11 @@ console.log(totalSelector(exampleState))    // { total: 2.322 }
 
 - [Reselect](#reselect)
   - [内容列表](#%e5%86%85%e5%ae%b9%e5%88%97%e8%a1%a8)
-  - [Installation](#installation)
-  - [Example](#example)
-    - [Motivation for Memoized Selectors](#motivation-for-memoized-selectors)
+  - [安装](#installation)
+  - [示例](#example)
+    - [使用选择存储器的原因](#motivation-for-memoized-selectors)
       - [`containers/VisibleTodoList.js`](#containersvisibletodolistjs)
-    - [Creating a Memoized Selector](#creating-a-memoized-selector)
+    - [创建选择存储器](#creating-a-memoized-selector)
       - [`selectors/index.js`](#selectorsindexjs)
     - [Composing Selectors](#composing-selectors)
     - [Connecting a Selector to the Redux Store](#connecting-a-selector-to-the-redux-store)
