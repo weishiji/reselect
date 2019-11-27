@@ -97,16 +97,15 @@ console.log(totalSelector(exampleState))    // { total: 2.322 }
 - [项目相关](#related-projects)
 - [License](#license)
 
-## Installation
+## 安装
     npm install reselect
 
-## Example
+## 示例
 
-If you prefer a video tutorial, you can find one [here](https://www.youtube.com/watch?v=6Xwo5mVxDqI).
+如果你更喜欢视频教程，请点击[传送门](https://www.youtube.com/watch?v=6Xwo5mVxDqI).
 
-### Motivation for Memoized Selectors
-
-> The examples in this section are based on the [Redux Todos List example](http://redux.js.org/docs/basics/UsageWithReact.html).
+### 使用选择存储器的原因
+> 这个示例是通过[Redux Todos List example](http://redux.js.org/docs/basics/UsageWithReact.html)实现。
 
 #### `containers/VisibleTodoList.js`
 
@@ -148,7 +147,7 @@ const VisibleTodoList = connect(
 export default VisibleTodoList
 ```
 
-In the above example, `mapStateToProps` calls `getVisibleTodos` to calculate `todos`. This works great, but there is a drawback: `todos` is calculated every time the state tree is updated. If the state tree is large, or the calculation expensive, repeating the calculation on every update may cause performance problems. Reselect can help to avoid these unnecessary recalculations.
+以上示例中, `mapStateToProps` calls `getVisibleTodos` to calculate `todos`. This works great, but there is a drawback: `todos` is calculated every time the state tree is updated. If the state tree is large, or the calculation expensive, repeating the calculation on every update may cause performance problems. Reselect can help to avoid these unnecessary recalculations.
 
 ### Creating a Memoized Selector
 
