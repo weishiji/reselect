@@ -147,15 +147,15 @@ const VisibleTodoList = connect(
 export default VisibleTodoList
 ```
 
-以上示例中, `mapStateToProps` calls `getVisibleTodos` to calculate `todos`. This works great, but there is a drawback: `todos` is calculated every time the state tree is updated. If the state tree is large, or the calculation expensive, repeating the calculation on every update may cause performance problems. Reselect can help to avoid these unnecessary recalculations.
+以上示例中, `mapStateToProps` 调用 `getVisibleTodos` 来计算 `todos`. 这样干看起来不错，但是它有一个缺点: 当状态树发生变化时`todos` 每次都会被重新计算. 如果状态树非常大, 或者每次计算性能开销都非常大,每次的重复计算可能会导致性能问题。Reselect可以帮助你解决不必要的计算。
 
-### Creating a Memoized Selector
+### 创建选择存储器
 
-We would like to replace `getVisibleTodos` with a memoized selector that recalculates `todos` when the value of `state.todos` or `state.visibilityFilter` changes, but not when changes occur in other (unrelated) parts of the state tree.
+当`state.todos` 或 `state.visibilityFilter`数据发生变化时，而不是状态树的其他部分发生变化的时候，我们希望用一个带存储器功能的选择器代替`getVisibleTodos`去重新计算`todos`，
 
-Reselect provides a function `createSelector` for creating memoized selectors. `createSelector` takes an array of input-selectors and a transform function as its arguments. If the Redux state tree is mutated in a way that causes the value of an input-selector to change, the selector will call its transform function with the values of the input-selectors as arguments and return the result. If the values of the input-selectors are the same as the previous call to the selector, it will return the previously computed value instead of calling the transform function.
+Reselect提供一个方法`createSelector`去创建存储选择器。 `createSelector`接收一组输入选择器并且将这些函数转化为参数。如果Redux状态树发生变化导致选择器的输入源数据发生改变，选择器将会调用转换函数将输入的参数所执行后的结果返回。如果这个结果和之前的选择器的结果一致，他将返回上一个计算结果，而不是重复调用这个转换函数。
 
-Let's define a memoized selector named `getVisibleTodos` to replace the non-memoized version above:
+我们定义一个存储选择器，并且命名为`getVisibleTodos`，用它来代替不带缓存功能的版本:
 
 #### `selectors/index.js`
 
