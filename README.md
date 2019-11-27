@@ -147,7 +147,7 @@ const VisibleTodoList = connect(
 export default VisibleTodoList
 ```
 
-以上示例中, `mapStateToProps` 调用 `getVisibleTodos` 来计算 `todos`. 这样干看起来不错，但是它有一个缺点: 当状态树发生变化时`todos` 每次都会被重新计算. 如果状态树非常大, 或者每次计算性能开销都非常大,每次的重复计算可能会导致性能问题。Reselect可以帮助你解决不必要的计算。
+以上示例中, `mapStateToProps` 调用 `getVisibleTodos` 来计算 `todos`. 这样看起来不错，但是它有一个缺点: 当状态树发生变化时`todos` 每次都会被重新计算. 如果状态树非常大, 或者每次计算性能开销都非常大,每次的重复计算可能会导致性能问题。Reselect可以帮助你解决不必要的计算。
 
 ### 创建选择存储器
 
