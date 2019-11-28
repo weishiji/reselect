@@ -179,12 +179,11 @@ export const getVisibleTodos = createSelector(
   }
 )
 ```
+在上面的例子中，`getVisibilityFilter` 和 `getTodos` 是选择器的输入源。他们是不带缓存功能的普通的选择器，因为他们没有转换所选择的数据。`getVisibleTodos`在另一边是一个缓存的选择器。它使用`getVisibilityFilter` 和 `getTodos` 这两个数据输入源，再加上转换函数计算出需要的 todos list。
 
-In the example above, `getVisibilityFilter` and `getTodos` are input-selectors. They are created as ordinary non-memoized selector functions because they do not transform the data they select. `getVisibleTodos` on the other hand is a memoized selector. It takes `getVisibilityFilter` and `getTodos` as input-selectors, and a transform function that calculates the filtered todos list.
+### 选择器的组成
 
-### Composing Selectors
-
-A memoized selector can itself be an input-selector to another memoized selector. Here is `getVisibleTodos` being used as an input-selector to a selector that further filters the todos by keyword:
+一个存储选择器本身可以当成另一个存储选择器的输入源。`getVisibleTodos`可以作为一个数据输入源给另一个选择器使用通过关键字做进一步的筛选：
 
 ```js
 const getKeyword = (state) => state.keyword
@@ -197,9 +196,9 @@ const getVisibleTodosFilteredByKeyword = createSelector(
 )
 ```
 
-### Connecting a Selector to the Redux Store
+### Redux状态树和选择器的关联
 
-If you are using [React Redux](https://github.com/reduxjs/react-redux), you can call selectors as regular functions inside `mapStateToProps()`:
+如果你在使用 [React Redux](https://github.com/reduxjs/react-redux), 你可以在`mapStateToProps()`里调用选择器的方法:
 
 #### `containers/VisibleTodoList.js`
 
@@ -231,9 +230,9 @@ const VisibleTodoList = connect(
 export default VisibleTodoList
 ```
 
-### Accessing React Props in Selectors
+### React Props中使用选择器
 
-> This section introduces a hypothetical extension to our app that allows it to support multiple Todo Lists. Please note that a full implementation of this extension requires changes to the reducers, components, actions etc. that aren’t directly relevant to the topics discussed and have been omitted for brevity.
+> 本节内容介绍了假设我们允许扩展多个Todo Lists的方法。请注意此程序的完整实施过程需要改变reducers，components，actions等等，为简洁期间，我们暂时省略掉与本次内容不相关的内容。
 
 So far we have only seen selectors receive the Redux store state as an argument, but a selector can receive props too.
 
