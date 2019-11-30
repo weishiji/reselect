@@ -234,9 +234,9 @@ export default VisibleTodoList
 
 > 本节内容介绍了假设我们允许扩展多个Todo Lists的方法。请注意此程序的完整实施过程需要改变reducers，components，actions等等，为简洁期间，我们暂时省略掉与本次内容不相关的内容。
 
-So far we have only seen selectors receive the Redux store state as an argument, but a selector can receive props too.
+这样我们看到选择器将Redux状态树作为参数接收，并且选择器也可以作为props传递。
 
-Here is an `App` component that renders three `VisibleTodoList` component instances, each of which has a `listId` prop:
+这是一个渲染了三次`VisibleTodoList`的`App`组件的实例，每个实例都有一个`listId`的prop：
 
 #### `components/App.js`
 
@@ -254,8 +254,7 @@ const App = () => (
   </div>
 )
 ```
-
-Each `VisibleTodoList` container should select a different slice of the state depending on the value of the `listId` prop, so let’s modify `getVisibilityFilter` and `getTodos` to accept a props argument:
+每个`VisibleTodoList`容器必须依赖`listId` prop来选择不同的状态切片，所以我们通过修改`getVisibilityFilter` 和 `getTodos`来接收props参数：
 
 #### `selectors/todoSelectors.js`
 
@@ -294,12 +293,11 @@ const mapStateToProps = (state, props) => {
   }
 }
 ```
+所以，现在`getVisibleTodos`可以访问`props'，并且一切似乎都工作正常。
 
-So now `getVisibleTodos` has access to `props`, and everything seems to be working fine.
+**但是这样有一个问题!**
 
-**But there is a problem!**
-
-Using the `getVisibleTodos` selector with multiple instances of the `VisibleTodoList` container will not correctly memoize:
+在使用`getVisibleTodos`选择器和`VisibleTodoList`容器多次实例化的时候，这样并不会正确的使用缓存：
 
 #### `containers/VisibleTodoList.js`
 
@@ -332,13 +330,13 @@ const VisibleTodoList = connect(
 export default VisibleTodoList
 ```
 
-A selector created with `createSelector` has a cache size of 1 and only returns the cached value when its set of arguments is the same as its previous set of arguments. If we alternate between rendering `<VisibleTodoList listId="1" />` and `<VisibleTodoList listId="2" />`, the shared selector will alternate between receiving `{listId: 1}` and `{listId: 2}` as its `props` argument. This will cause the arguments to be different on each call, so the selector will always recompute instead of returning the cached value. We’ll see how to overcome this limitation in the next section.
+一个选择器在用`createSelector`创建的时候，当它设置的参数和上一次设置的参数相同的时候，这个选择器会设置他的缓存大小为1并且只返回它的缓存。如果我们交替渲染`<VisibleTodoList listId="1" />` 和 `<VisibleTodoList listId="2" />`，共享的选择器会交替接收`{listId: 1}` 和 `{listId: 2}`作为他们的`props`参数。这样会导致每次调用的参数都不相同，因此选择器每次都会重新计算，而不是用缓存的数据。我们将在下一节中了解如何克服此限制。
 
-### Sharing Selectors with Props Across Multiple Component Instances
+### 跨多个组件实例共享选择器
 
-> The examples in this section require React Redux v4.3.0 or greater
+> 这个章节的示例需要React Redux v4.3.0 或更高版本
 
-> An alternative approach can be found in [re-reselect](https://github.com/toomuchdesign/re-reselect)
+> 另一种方法示例在[re-reselect](https://github.com/toomuchdesign/re-reselect)
 
 To share a selector across multiple `VisibleTodoList` instances while passing in `props` **and** retaining memoization, each instance of the component needs its own private copy of the selector.
 
